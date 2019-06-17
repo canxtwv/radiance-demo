@@ -8,6 +8,8 @@ scalaVersion := "2.12.5"
 
 resolvers += Resolver.sonatypeRepo("snapshots")
 
+resolvers += Resolver.sonatypeRepo("releases")
+
 scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature", "-encoding", "utf8", "-language:postfixOps")
 
 lazy val `twitter` =
@@ -36,6 +38,8 @@ libraryDependencies ++= Seq(
 
   "com.lightbend.lagom" %% "lagom-scaladsl-persistence" % "1.5.0-RC2",
   "com.lightbend.lagom" %% "lagom-scaladsl-persistence-cassandra" % "1.5.0-RC2",
+
+  "com.danielasfregola" %% "twitter4s" % "6.1",
 
   "org.scalatest" %% "scalatest" % "3.0.4" % Test,
   "com.lightbend.lagom" %% "lagom-scaladsl-testkit" % "1.5.0-RC2" % Test,

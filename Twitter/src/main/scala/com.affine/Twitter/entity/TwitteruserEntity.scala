@@ -12,25 +12,26 @@ class TwitteruserEntity extends PersistentEntity {
   override type Event = TwitteruserEvent
   override type State = TwitteruserState
 
-  override def initialState = TwitteruserState(None, LocalDateTime.now().toString)
+  override def initialState = TwitteruserState(tweets = Map.empty[Long, Tweet])
 
   override def behavior: (TwitteruserState) => Actions = {
-    case TwitteruserState(_, _) => Actions()
-      .onCommand[CreateTwitteruserCommand, Twitteruser] {
-      case (CreateTwitteruserCommand(x), ctx, _) ⇒
-        ctx.thenPersist(TwitteruserCreated(x))(_ ⇒ ctx.reply(x))
+    case TwitteruserState(_) => Actions()
+      .onCommand[AddTweets, TweetsAdded] {
+      case (AddTweets(_, x), ctx, s) ⇒
+        val notSeen = x.filterNot(y => s.tweets.contains(y.id))
+        ctx.thenPersist(TweetsAdded(entityId, notSeen))(y ⇒ ctx.reply(y))
     }.onReadOnlyCommand[GetTwitteruserCommand, Twitteruser] {
       case (GetTwitteruserCommand(id), ctx, state) =>
-        ctx.reply(state.entity.getOrElse(Twitteruser(id, "not found")))
+        ctx.reply(Twitteruser(entityId, state.tweets.values.toSeq))
     }
-      .onEvent {
-        case (TwitteruserCreated(x), _) ⇒
-          TwitteruserState(Some(x), LocalDateTime.now().toString)
-      }
+    .onEvent {
+      case (TweetsAdded(_, x), s) ⇒
+        TwitteruserState(tweets = s.tweets ++ x.map(y => y.id -> y).toMap)
+    }
   }
 }
 
 class TwitteruserEntityDatabase(persistentEntityRegistry: PersistentEntityRegistry) extends TwitteruserDatabase{
-  def createTwitteruser(x: CreateTwitteruserCommand): Future[Twitteruser] = persistentEntityRegistry.refFor[TwitteruserEntity](x.entity.id.toString).ask(x)
-  def getTwitteruser(x: GetTwitteruserCommand): Future[Twitteruser] = persistentEntityRegistry.refFor[TwitteruserEntity](x.id.toString).ask(x)
+  def addTweets(x: AddTweets): Future[TweetsAdded] = persistentEntityRegistry.refFor[TwitteruserEntity](x.user).ask(x)
+  def getTwitteruser(x: GetTwitteruserCommand): Future[Twitteruser] = persistentEntityRegistry.refFor[TwitteruserEntity](x.user).ask(x)
 }
