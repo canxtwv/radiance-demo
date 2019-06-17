@@ -12,7 +12,7 @@ class TwitteruserEntity extends PersistentEntity {
   override type Event = TwitteruserEvent
   override type State = TwitteruserState
 
-  override def initialState = TwitteruserState(tweets = Map.empty[Long, Tweet])
+  override def initialState = TwitteruserState(tweets = Map.empty[String, Tweet])
 
   override def behavior: (TwitteruserState) => Actions = {
     case TwitteruserState(_) => Actions()

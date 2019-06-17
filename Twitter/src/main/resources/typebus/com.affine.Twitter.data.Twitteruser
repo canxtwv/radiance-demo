@@ -100,7 +100,7 @@
             "com.affine.Twitter.data.Tweet.id" : {
               "term" : {
                 "_type" : "io.surfkit.typebus.Typebus.Leaf",
-                "type" : "scala.Long"
+                "type" : "java.lang.String"
               },
               "pos" : 3,
               "hasDefault" : false
@@ -165,7 +165,7 @@
               "term" : {
                 "contains" : {
                   "_type" : "io.surfkit.typebus.Typebus.Leaf",
-                  "type" : "scala.Long"
+                  "type" : "java.lang.String"
                 },
                 "_type" : "io.surfkit.typebus.Typebus.MonoContainer",
                 "type" : "scala.Option"

@@ -12,11 +12,11 @@ package object data {
   final case class Tweet(favorite_count: Int = 0,
                          favorited: Boolean = false,
                          filter_level: Option[String] = None,
-                         id: Long,
+                         id: String,
                          id_str: String,
                          lang: Option[String] = None,
                          possibly_sensitive: Boolean = false,
-                         quoted_status_id: Option[Long] = None,
+                         quoted_status_id: Option[String] = None,
                          quoted_status_id_str: Option[String] = None,
                          scopes: Map[String, Boolean] = Map.empty,
                          retweet_count: Long = 0,
@@ -33,7 +33,7 @@ package object data {
 
   sealed trait TwitteruserEvent
 
-  case class TwitteruserState(tweets: Map[Long, Tweet])
+  case class TwitteruserState(tweets: Map[String, Tweet])
   case class Twitteruser(user: String, tweets: Seq[Tweet])
 
   case class RecentTweets(user: String, tweets: Seq[Tweet]) extends TwitteruserEvent
